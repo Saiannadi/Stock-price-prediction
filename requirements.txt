@@ -30,8 +30,8 @@ traitlets==5.0.5
 tzlocal==2.1
 urllib3==1.26.2
 validators==0.18.1
-watchdog==1.0.0
-wcwidth==0.2.5
+watchdog>=1.0.0
+wcwidth==0.2.5  
 webencodings==0.5.1
 widgetsnbextension==3.5.1
 wincertstore==0.2
