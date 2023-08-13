@@ -1,9 +1,9 @@
-streamlit==0.87.0
+streamlit==1.25.0
 pandas==1.3.3
 numpy==1.21.2
 plotly==5.3.1
 yfinance==0.1.63
-stocknews==0.3.3
+stocknews==0.9.11
 prophet==1.0
 certifi==2020.12.5
 colorama==0.4.4
