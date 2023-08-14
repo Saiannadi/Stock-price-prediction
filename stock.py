@@ -153,7 +153,8 @@ if submit_button:
             with col1:
                 st.write("")
             with col2:
-                days = st.number_input(label="Enter the Number of days", value=0, step=1, format="%d")
+                #days = st.number_input(label="Enter the Number of days", value=0, step=1, format="%d")
+                days=st.slider('Number of days to predict', 0, 365, 15)
                 
             with col3:
                 st.write("")
