@@ -7,7 +7,7 @@ from stocknews import StockNews
 from datetime import datetime
 from prophet import Prophet
 
-st.set_page_config(page_title="Stock prices", page_icon=":minidisc:", layout="wide")
+st.set_page_config(page_title="Stock prices", page_icon="chart_with_upwards_trend", layout="wide")
 st.title("Stock Dashboard")
 
 def local_css(file_name):
