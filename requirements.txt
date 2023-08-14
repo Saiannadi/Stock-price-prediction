@@ -1,6 +1,7 @@
 streamlit==1.25.0
 pandas==2.0.3
 numpy==1.25.2
+pystan==3.7.0
 plotly==5.16.0
 yfinance==0.2.28
 stocknews==0.9.11
