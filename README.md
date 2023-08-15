@@ -1,6 +1,6 @@
 # Stock-price-prediction
 
-![image](https://github.com/sai-annadi/Stock-price-prediction/assets/111168434/f12bc401-5b02-463f-adf6-598d31e50ca1)
+![image](https://github.com/sai-annadi/Stock-price-prediction/assets/111168434/196f775e-c320-427d-8402-80656605529a)
 
 The Stock Price Prediction Dashboard is an interactive web application built using Streamlit, yfinance, StockNews, Prophet, and Plotly Graph Objects. With this dashboard, users can select a stock ticker from a predefined list, choose a date range, and explore various visualizations and predictions related to the selected stock's historical prices and news sentiment.
 
