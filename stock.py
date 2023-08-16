@@ -45,20 +45,14 @@ def predict(ticker, days):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=hist['ds'], y=hist['y'], mode='lines', name="Actual Close Prices", line=dict(color='red')))
     fig.add_trace(go.Scatter(x=forecast['ds'], y=forecast['yhat'], mode='lines', name="Predicted Close Prices", line=dict(color='green')))
-    fig.add_trace(go.Scatter(
-        x=forecast['ds'],
-        y=forecast['yhat_upper'],
-        mode='lines',
-        line=dict(color='rgba(255, 0, 0, 0)'),
-        fill='tozeroy',
-        fillcolor='rgba(255, 182, 193, 0.2)',
-        name="Prediction Interval"
-    ))
-    fig.update_layout(title="Actual and Predicted Close Prices",
-                      xaxis_title="Date", yaxis_title="Close Price",
-                      xaxis_range=[start_date, forecast['ds'].max()])
-    st.plotly_chart(fig, use_container_width=True)
 
+    fig.add_trace(go.Scatter(x=forecast['ds'], y=forecast['yhat_upper'], mode='lines', line=dict(color='hsla(0, 100%, 30%, 0.3)'), fill='tonexty', fillcolor='rgba(255, 182, 193, 0.4)', name="Prediction Upper Interval"))
+    fig.add_trace(go.Scatter(x=forecast['ds'], y=forecast['yhat_lower'], mode='lines', line=dict(color='hsla(0, 100%, 30%, 0.3)'), fill='tonexty', fillcolor='rgba(255, 182, 193, 0.2)', name="Prediction Lower Interval"))
+
+    fig.update_layout(title="Actual and Predicted Close Prices with Prediction Interval",
+                    xaxis_title="Date", yaxis_title="Close Price",
+                    xaxis_range=[start_date, forecast['ds'].max()])
+    st.plotly_chart(fig, use_container_width=True)
 min_date = datetime(1995, 1, 1).date()
 
 if 'session_state' not in st.session_state:
@@ -70,7 +64,7 @@ if 'session_state' not in st.session_state:
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    ticker_options = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA']
+    ticker_options = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA','NVDA','AMD','META','UBER',]
     ticker = st.session_state.ticker or ticker_options[0]
     st.session_state.ticker = st.selectbox(label="Choose a ticker", options=ticker_options, help='Please select a ticker from the dropdown.')
 
