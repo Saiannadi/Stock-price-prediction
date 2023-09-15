@@ -10,6 +10,6 @@ The highlight of the dashboard is the stock price prediction feature. It utilize
 
 Overall, the Stock Price Prediction Dashboard offers a comprehensive and interactive platform for users to explore stock data, stay updated with the latest news, and make informed decisions about their investments. With its seamless integration of various Python libraries, the dashboard provides an insightful and visually appealing experience for anyone interested in understanding stock market trends and predictions.
 
-Website url:https://stock-price-prediction-a.streamlit.app/
+Website url:https://stock-price-predictions.streamlit.app/
 
 
