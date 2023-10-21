@@ -31,7 +31,7 @@ The Stock Price Prediction Dashboard offers the following key features:
 
 Follow these steps to get started with the Stock Price Prediction Dashboard:
 
-1. **Installation:**Set up the required Python libraries.
+1. **Installation:** Set up the required Python libraries.
 2. **Usage:** Run the dashboard and explore stock data and predictions.
 
 ## Installation
