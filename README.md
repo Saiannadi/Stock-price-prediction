@@ -41,6 +41,18 @@ To install the necessary libraries, you can use `pip`. Simply run:
 ```bash
 pip install streamlit yfinance stocknews prophet plotly
 ```
+## Usage
+1.Run the dashboard by executing the following command:
+``` bash
+streamlit run stock_price_prediction_dashboard.py
+```
+2. In the dashboard, you can:
+
+      i.Select a stock ticker from a predefined list.
+      
+      ii.Choose a date range.
+      
+      iii.Explore visualizations and predictions related to the stock.
 
 **Website url:**https://stock-price-predictions.streamlit.app/
 
