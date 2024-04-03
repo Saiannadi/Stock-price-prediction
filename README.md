@@ -1,4 +1,4 @@
-# Stock-price-prediction
+# Stock Price Prediction Using Machine Learning
 
 ![image](https://github.com/sai-annadi/Stock-price-prediction/assets/111168434/196f775e-c320-427d-8402-80656605529a)
 
