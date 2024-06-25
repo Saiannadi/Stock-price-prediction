@@ -6,6 +6,8 @@ import yfinance as yf
 from stocknews import StockNews
 from datetime import datetime
 from prophet import Prophet
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 st.set_page_config(page_title="Stock prices", page_icon="chart_with_upwards_trend", layout="wide")
 st.title("Stock Dashboard")
@@ -16,6 +18,31 @@ def local_css(file_name):
 
 local_css("style/style.css")
 
+def prophet_cv(data, n_splits=5):
+    tscv = TimeSeriesSplit(n_splits=n_splits)
+    mae_scores = []
+    rmse_scores = []
+    
+    for train_index, test_index in tscv.split(data):
+        train = data.iloc[train_index]
+        test = data.iloc[test_index]
+        
+        m = Prophet(daily_seasonality=True)
+        m.fit(train)
+        
+        future = m.make_future_dataframe(periods=len(test))
+        forecast = m.predict(future)
+        
+        y_true = test['y'].values
+        y_pred = forecast.iloc[-len(test):]['yhat'].values
+        
+        mae = mean_absolute_error(y_true, y_pred)
+        rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+        
+        mae_scores.append(mae)
+        rmse_scores.append(rmse)
+    
+    return mae_scores, rmse_scores
 def predict(ticker, days):
     yfin = yf.Ticker(ticker)
     hist = yfin.history(period="max")
@@ -53,13 +80,26 @@ def predict(ticker, days):
                     xaxis_title="Date", yaxis_title="Close Price",
                     xaxis_range=[start_date, forecast['ds'].max()])
     st.plotly_chart(fig, use_container_width=True)
+    # Perform cross-validation
+    mae_scores, rmse_scores = prophet_cv(hist)
+    
+    st.write("Cross-Validation Results:")
+    st.write(f"Mean Absolute Error: {np.mean(mae_scores):.2f} (+/- {np.std(mae_scores):.2f})")
+    st.write(f"Root Mean Squared Error: {np.mean(rmse_scores):.2f} (+/- {np.std(rmse_scores):.2f})")
+    
+    # Create box plots for MAE and RMSE
+    fig = go.Figure()
+    fig.add_trace(go.Box(y=mae_scores, name="MAE"))
+    fig.add_trace(go.Box(y=rmse_scores, name="RMSE"))
+    fig.update_layout(title="Cross-Validation Scores", yaxis_title="Score")
+    st.plotly_chart(fig)
 min_date = datetime(1995, 1, 1).date()
 
 if 'session_state' not in st.session_state:
     st.session_state.ticker = None
     st.session_state.start_date = None
     st.session_state.end_date = None
-    st.session_state.days = 15  # Default value for prediction days
+    st.session_state.days = 5 # Default value for prediction days
 
 col1, col2, col3 = st.columns(3)
 
@@ -76,10 +116,6 @@ with col3:
     end_date = st.session_state.end_date or datetime.today().date()
     st.session_state.end_date = st.date_input("End Date", value=end_date)
 
-# with col2:
-#     submit_button = st.button("Submit")
-
-# if submit_button:
 if st.session_state.ticker not in ticker_options:        
     st.warning("Please select a valid ticker from the dropdown.")
 else:
@@ -105,9 +141,9 @@ else:
 
         st.markdown(f'<p class="big2-font">PLOTS FOR {st.session_state.ticker}</p>', unsafe_allow_html=True)
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='close Price', line=dict(color='red')))
+        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price', line=dict(color='red')))
         fig.add_trace(go.Scatter(x=data.index, y=data['Open'], mode='lines', name='Open Price', line=dict(color='blue')))
-        fig.update_layout(title=f"{st.session_state.ticker} - Plots of price", xaxis_title="Date", yaxis_title=" Price")
+        fig.update_layout(title=f"{st.session_state.ticker} - Plots of price", xaxis_title="Date", yaxis_title="Price")
         st.plotly_chart(fig, use_container_width=True)
         pricing_data, News, prediction = st.tabs(['Pricing Data', 'Top News', 'Prediction'])
         with pricing_data:
@@ -119,14 +155,14 @@ else:
             annual_return = df['% change'].mean() * 252 * 100
             st.write("Annual return: {:.2f}%".format(annual_return))
             stdev = np.std(df['% change']) * np.sqrt(252)
-            st.write("standard deviation: {:.2f}%".format(stdev * 100))
-            st.write("risk Adj Return is :{:.2f}%".format(annual_return / (stdev * 100)))
+            st.write("Standard deviation: {:.2f}%".format(stdev * 100))
+            st.write("Risk Adjusted Return is :{:.2f}%".format(annual_return / (stdev * 100)))
         with News:
             st.write(f"<p class='big2-font'>Top News related to {st.session_state.ticker}</p>", unsafe_allow_html=True)
             sn = StockNews(st.session_state.ticker, save_news=False)
             news = sn.read_rss()
             for i in range(10):
-                st.subheader(f"news{i+1}")
+                st.subheader(f"News {i+1}")
                 st.write(news['published'][i])
                 st.write(news['title'][i])
                 st.write(news['summary'][i])
@@ -154,7 +190,8 @@ else:
             with col1:
                 st.write("")
             with col2:
-                days =  st.number_input(label="Enter the Number of days", value=0, step=1, format="%d")
+                days =  st.number_input(label="Enter the Number of Days for Prediction", min_value=1, max_value=365, value=st.session_state.days)
+                st.session_state.days = days
             with col3:
                 st.write("")
-            predict(st.session_state.ticker, days)
+            predict(st.session_state.ticker, st.session_state.days)
